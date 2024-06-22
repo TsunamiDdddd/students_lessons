@@ -17,6 +17,8 @@ class ShowUser(BaseModel):
     name: str
     surname: str
     email: EmailStr
+    class Config:
+        orm_mode= True
 
 
 class UserCreate(BaseModel):
@@ -24,6 +26,8 @@ class UserCreate(BaseModel):
     surname: str
     email: EmailStr
     password: str
+    class Config:
+        orm_mode= True
 
     @validator("name")
     def validate_name(cls, value):
@@ -41,20 +45,22 @@ class UserCreate(BaseModel):
             )
         return value
 
-
 class DeleteUserResponse(BaseModel):
     deleted_user_id: uuid.UUID
-
+    class Config:
+        orm_mode= True
 
 class UpdatedUserResponse(BaseModel):
     updated_user_id: uuid.UUID
-
+    class Config:
+        orm_mode= True
 
 class UpdateUserRequest(BaseModel):
     name: Optional[constr(min_length=1)]
     surname: Optional[constr(min_length=1)]
     email: Optional[EmailStr]
-
+    class Config:
+        orm_mode= True
     @validator("name")
     def validate_name(cls, value):
         if not LETTER_PATTERN.match(value):
@@ -75,3 +81,5 @@ class UpdateUserRequest(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+    class Config:
+        orm_mode= True
