@@ -4,9 +4,13 @@ from enum import Enum
 from sqlalchemy import Boolean
 from sqlalchemy import Column
 from sqlalchemy import String
+from sqlalchemy import Integer
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import JSON
+from sqlalchemy.dialects.postgresql import VARCHAR
 from sqlalchemy.orm import declarative_base
+from sqlalchemy import Text
 
 # Модели данных
 
@@ -29,3 +33,12 @@ class User(Base):
     is_active = Column(Boolean(), default=True)
     hashed_password = Column(String, nullable=True)
     roles = Column(ARRAY(String), nullable=True)
+class Lesson(Base):
+    __tablename__="lessons"
+    lesson_id = Column(Integer, primary_key = True)
+    title = Column(VARCHAR,nullable = True)
+    description = Column(Text,nullable = True)
+    content = Column(Text,nullable = True)
+
+
+
