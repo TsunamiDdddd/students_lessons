@@ -5,6 +5,7 @@ from sqlalchemy import Boolean
 from sqlalchemy import Column
 from sqlalchemy import String
 from sqlalchemy import Integer
+from sqlalchemy import TIMESTAMP
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.dialects.postgresql import JSON
@@ -40,5 +41,20 @@ class Lesson(Base):
     description = Column(Text,nullable = True)
     content = Column(Text,nullable = True)
 
+class Exercise(Base):
+    __tablename__="exercises"
+    exercise_id = Column(Integer,primary_key = True)
+    lesson_id = Column(Integer,nullable=True)
+    title = Column(VARCHAR,nullable=True)
+    description = Column(Text,nullable = True)
+    type = Column(VARCHAR,nullable = True)
+    questions = Column(JSON, nullable = True)
 
-
+class Completed_exercise(Base):
+    __tablename__="completed_exercises"
+    completed_exercise_id=Column(Integer,primary_key = True)
+    user_id = Column(Integer,nullable = True)
+    exercise_id = Column(Integer, nullable = True)
+    score = Column(Integer,nullable = True)
+    completed_at = Column(TIMESTAMP,nullable=True)
+    answers = Column(JSON,nullable=True)
