@@ -46,7 +46,7 @@ class Exercise(Base):
     exercise_id = Column(Integer,primary_key = True)
     lesson_id = Column(Integer,nullable=True)
     title = Column(VARCHAR,nullable=True)
-    description = Column(Text,nullable = True)
+    description = Column(Text,nullable=True)
     type = Column(VARCHAR,nullable = True)
     questions = Column(JSON, nullable = True)
 
