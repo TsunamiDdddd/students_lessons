@@ -37,4 +37,13 @@ class LessonDAL:
             return lesson_row[0]
 
     async def update_lesson(self, lesson_id: int,**kwargs)->Union[Lesson,None]:
-        query = ()
+        query = (
+            update(Lesson)
+            .where(Lesson.lesson_id == lesson_id)
+            .values(kwargs)
+            .returning(Lesson.lesson_id)
+        )
+        res = await self.db_session.execute(query)
+        update_lesson_id_row = res.fetchone()
+        if update_lesson_id_row is not None:
+            return update_lesson_id_row[0]
