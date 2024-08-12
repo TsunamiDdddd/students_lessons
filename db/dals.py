@@ -41,7 +41,7 @@ class UserDAL:
     async def delete_user(self, user_id: UUID) -> Union[UUID, None]:
         query = (
             update(User)
-            .where(and_(User.user_id == user_id, User.is_active == True))
+            .where(and_(User.user_id == user_id, User.is_active is True))
             .values(is_active=False)
             .returning(User.user_id)
         )
