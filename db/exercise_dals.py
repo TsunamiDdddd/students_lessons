@@ -1,5 +1,5 @@
 from typing import Union
-from uuid import UUID
+
 
 from sqlalchemy import and_
 from sqlalchemy import select
@@ -55,4 +55,7 @@ class ExerciseDAL:
             .returning(Exercise.exercise_id)
         )
         res=await self.db_session.execute(query)
+        update_exercise_id_row = res.fetchone()
+        if update_exercise_id_row is not None:
+            return update_exercise_id_row[0]
         
