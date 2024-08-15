@@ -26,4 +26,6 @@ class LessonCreate(BaseModel):
 
 class UpdateLessonRequest(BaseModel):
     title: Optional[constr(min_length=1)]
+    description: Optional[constr(min_length=1)]
+    content: Optional[constr(min_length=1)]
 
