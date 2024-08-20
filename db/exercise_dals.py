@@ -16,7 +16,7 @@ class Question:
     completed: bool
 class ExerciseDAL:
 
-    def __int__(self, db_session: AsyncSession):
+    def __init__(self, db_session: AsyncSession):
         self.db_session = db_session
 
     async def create_exercise(
