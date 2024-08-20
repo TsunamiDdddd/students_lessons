@@ -6,6 +6,7 @@ from db.dals import UserDAL
 from db.models import UserRole
 from db.models import User
 from hashing import Hasher
+from jwt_oauth import verify_jwt_token,create_jwt_token
 
 
 async def _create_new_user(body: UserCreate, session) -> ShowUser:
@@ -57,3 +58,4 @@ async def _get_user_by_id(user_id, session) -> User | None:
         )
         if user is not None:
             return user
+
