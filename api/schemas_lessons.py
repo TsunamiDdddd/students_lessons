@@ -28,4 +28,11 @@ class UpdateLessonRequest(BaseModel):
     title: Optional[constr(min_length=1)]
     description: Optional[constr(min_length=1)]
     content: Optional[constr(min_length=1)]
+    class Config:
+        orm_mode= True
+class UpdateLessonResponse(BaseModel):
+    updated_lesson_id: int
+    class Config:
+        orm_mode= True
+
 

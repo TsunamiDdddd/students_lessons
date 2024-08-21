@@ -8,9 +8,10 @@ from api.actions.lesson import _create_new_lesson
 from api.actions.lesson import _update_lesson
 from api.actions.lesson import _get_lesson_by_id
 from db.lesson_dals import LessonDAL
-from schemas_lessons import ShowLesson
-from schemas_lessons import LessonCreate
-from schemas_lessons import UpdateLessonRequest
+from api.schemas_lessons import ShowLesson
+from api.schemas_lessons import LessonCreate
+from api.schemas_lessons import UpdateLessonRequest
+from api.schemas_lessons import UpdateLessonResponse
 from db.session import get_db
 
 logger = getLogger(__name__)
@@ -19,7 +20,7 @@ lesson_router = APIRouter()
 
 
 @lesson_router.post("/", response_model=ShowLesson)
-async def create_lesson(body: LessonCreate, db:AsyncSession = Depends(get_db()))-> ShowLesson:
+async def create_lesson(body: LessonCreate, db:AsyncSession = Depends(get_db))-> ShowLesson:
     try:
         return await _create_new_lesson(body,db)
     except IntegrityError as err:
@@ -37,12 +38,12 @@ async def get_lesson_by_id(lesson_id: int, db: AsyncSession = Depends(get_db))->
     return lesson
 
 
-@lesson_router.patch("/",response_model= ShowLesson)
+@lesson_router.patch("/",response_model= UpdateLessonResponse)
 async def update_lesson_by_id(
     lesson_id: int,
     body: UpdateLessonRequest,
     db:AsyncSession = Depends(get_db)
-)-> ShowLesson:
+)-> UpdateLessonResponse:
     updated_lesson_params = body.dict(exclude_none = True)
     if updated_lesson_params == {}:
         raise HTTPException(
@@ -56,9 +57,9 @@ async def update_lesson_by_id(
         )
     try:
         updated_lesson_id = await _update_lesson(
-            updated_lesson_params=updated_lesson_params, session=db, user_id=user_id
+            updated_lesson_params=updated_lesson_params, session=db, lesson_id=lesson_id
         )
     except IntegrityError as err:
         logger.error(err)
         raise HTTPException(status_code=503, detail=f"Ошибка БД: {err}")
-    return
+    return UpdateLessonResponse(updated_lesson_id=updated_lesson_id)
