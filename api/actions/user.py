@@ -1,12 +1,13 @@
 from uuid import UUID
 
+from fastapi import HTTPException
+
 from api.schemas import ShowUser
 from api.schemas import UserCreate
 from db.dals import UserDAL
 from db.models import UserRole
 from db.models import User
 from hashing import Hasher
-from jwt_oauth import verify_jwt_token,create_jwt_token
 
 
 async def _create_new_user(body: UserCreate, session) -> ShowUser:
@@ -40,7 +41,7 @@ async def _delete_user(user_id, session) -> UUID | None:
 
 
 async def _update_user(
-    updated_user_params: dict, user_id: UUID, session
+        updated_user_params: dict, user_id: UUID, session
 ) -> UUID | None:
     async with session.begin():
         user_dal = UserDAL(session)
@@ -59,3 +60,39 @@ async def _get_user_by_id(user_id, session) -> User | None:
         if user is not None:
             return user
 
+
+async def _get_user_by_email(email, session) -> User | None:
+    async with session.begin():
+        user_dal = UserDAL(session)
+        user = await user_dal.get_user_by_email(
+            email=email
+        )
+        if user is not None:
+            return user
+
+
+def check_user_permissions(target_user: User, current_user: User) -> bool:
+    if UserRole.SUPERADMIN in current_user.roles:
+        raise HTTPException(
+            status_code=406, detail="Superadmin cannot be deleted via API."
+        )
+    if target_user.user_id != current_user.user_id:
+        # check admin role
+        if not {
+            UserRole.ADMIN,
+            UserRole.SUPERADMIN,
+        }.intersection(current_user.roles):
+            return False
+        # check admin deactivate superadmin attempt
+        if (
+            UserRole.SUPERADMIN in target_user.roles
+            and UserRole.ADMIN in current_user.roles
+        ):
+            return False
+        # check admin deactivate admin attempt
+        if (
+            UserRole.ADMIN in target_user.roles
+            and UserRole.ADMIN in current_user.roles
+        ):
+            return False
+    return True

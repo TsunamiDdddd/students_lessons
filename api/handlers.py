@@ -9,11 +9,14 @@ from api.actions.user import _create_new_user
 from api.actions.user import _delete_user
 from api.actions.user import _get_user_by_id
 from api.actions.user import _update_user
+from api.actions.user import check_user_permissions
+from api.actions.auth import get_current_user_from_token
 from api.schemas import DeleteUserResponse
 from api.schemas import ShowUser
 from api.schemas import UpdatedUserResponse
 from api.schemas import UpdateUserRequest
 from api.schemas import UserCreate
+from db.models import User
 from db.session import get_db
 
 logger = getLogger(__name__)
@@ -34,13 +37,17 @@ async def create_user(body: UserCreate, db: AsyncSession = Depends(get_db)) -> S
 async def delete_user(
     user_id: UUID,
     db: AsyncSession = Depends(get_db),
+    current_user: User = get_current_user_from_token(),
 ) -> DeleteUserResponse:
     user_for_deletion = await _get_user_by_id(user_id, db)
     if user_for_deletion is None:
         raise HTTPException(
             status_code=404, detail=f"Пользователь с id {user_id} не найден."
         )
+
     deleted_user_id = await _delete_user(user_id, db)
+    if not check_user_permissions(user_id,current_user):
+        raise HTTPException(status_code=403,detail="Forbidden")
     if deleted_user_id is None:
         raise HTTPException(
             status_code=404, detail=f"Пользователь с id {user_id} не найден."

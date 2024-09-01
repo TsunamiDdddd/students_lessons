@@ -58,3 +58,9 @@ class Completed_exercise(Base):
     score = Column(Integer,nullable = True)
     completed_at = Column(TIMESTAMP,nullable=True)
     answers = Column(JSON,nullable=True)
+
+class Types_of_exercises(Base):
+    __tablename__="types_of_exercises"
+    type_id = Column(Integer,primary_key = True)
+    type_title = Column(VARCHAR,nullable = True)
+    type_description = Column(Text,nullable=True)
