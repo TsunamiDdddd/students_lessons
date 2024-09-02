@@ -34,12 +34,31 @@ class User(Base):
     is_active = Column(Boolean(), default=True)
     hashed_password = Column(String, nullable=True)
     roles = Column(ARRAY(String), nullable=True)
+
+    @property
+    def is_superadmin(self) -> bool:
+        return UserRole.SUPERADMIN in self.roles
+
+    @property
+    def is_admin(self) -> bool:
+        return UserRole.ADMIN in self.roles
+
+    def enrich_admin_roles_by_admin_role(self):
+        if not self.is_admin:
+            return {*self.roles, UserRole.ADMIN}
+
+    def remove_admin_privileges_from_model(self):
+        if self.is_admin:
+            return {role for role in self.roles if role != UserRole.ADMIN}
+
+
 class Lesson(Base):
     __tablename__="lessons"
     lesson_id = Column(Integer, primary_key = True)
     title = Column(VARCHAR,nullable = True)
     description = Column(Text,nullable = True)
     content = Column(Text,nullable = True)
+
 
 class Exercise(Base):
     __tablename__="exercises"
@@ -50,7 +69,8 @@ class Exercise(Base):
     type = Column(VARCHAR,nullable = True)
     questions = Column(JSON, nullable = True)
 
-class Completed_exercise(Base):
+
+class CompletedExercise(Base):
     __tablename__="completed_exercises"
     completed_exercise_id=Column(Integer,primary_key = True)
     user_id = Column(Integer,nullable = True)
@@ -59,7 +79,8 @@ class Completed_exercise(Base):
     completed_at = Column(TIMESTAMP,nullable=True)
     answers = Column(JSON,nullable=True)
 
-class Types_of_exercises(Base):
+
+class TypesOfExercises(Base):
     __tablename__="types_of_exercises"
     type_id = Column(Integer,primary_key = True)
     type_title = Column(VARCHAR,nullable = True)
