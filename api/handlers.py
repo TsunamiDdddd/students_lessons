@@ -37,7 +37,7 @@ async def create_user(body: UserCreate, db: AsyncSession = Depends(get_db)) -> S
 async def delete_user(
         user_id: UUID,
         db: AsyncSession = Depends(get_db),
-        current_user: User = get_current_user_from_token(),
+        current_user: User = Depends(get_current_user_from_token),
 ) -> DeleteUserResponse:
     user_for_deletion = await _get_user_by_id(user_id, db)
     if user_for_deletion is None:

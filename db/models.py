@@ -1,7 +1,7 @@
 import uuid
 from enum import Enum
 
-from sqlalchemy import Boolean
+from sqlalchemy import Boolean, ForeignKey
 from sqlalchemy import Column
 from sqlalchemy import String
 from sqlalchemy import Integer
@@ -63,7 +63,7 @@ class Lesson(Base):
 class Exercise(Base):
     __tablename__="exercises"
     exercise_id = Column(Integer,primary_key = True)
-    lesson_id = Column(Integer,nullable=True)
+    lesson_id = Column(Integer,ForeignKey( "lessons.lesson_id"),nullable=True)
     title = Column(VARCHAR,nullable=True)
     description = Column(Text,nullable=True)
     type = Column(VARCHAR,nullable = True)
@@ -73,8 +73,8 @@ class Exercise(Base):
 class CompletedExercise(Base):
     __tablename__="completed_exercises"
     completed_exercise_id=Column(Integer,primary_key = True)
-    user_id = Column(Integer,nullable = True)
-    exercise_id = Column(Integer, nullable = True)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.user_id"),nullable = True)
+    exercise_id = Column(Integer,ForeignKey("exercises.exercise_id"), nullable = True)
     score = Column(Integer,nullable = True)
     completed_at = Column(TIMESTAMP,nullable=True)
     answers = Column(JSON,nullable=True)
