@@ -2,6 +2,7 @@ from db.models import Exercise
 from api.schemas_exercises import ShowExercise,ExerciseCreate
 from db.exercise_dals import ExerciseDAL
 
+
 async def _create_new_exercise (body: ExerciseCreate, session) -> ShowExercise:
     async with session.begin():
         exercise_dal = ExerciseDAL(session)
@@ -21,6 +22,7 @@ async def _create_new_exercise (body: ExerciseCreate, session) -> ShowExercise:
             type=exercise.type,
             questions=exercise.questions
         )
+
 
 async def _update_exercise(
         updated_exercise_params: dict, exercise_id: int, session

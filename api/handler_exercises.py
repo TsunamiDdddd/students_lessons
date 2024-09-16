@@ -15,6 +15,7 @@ logger = getLogger(__name__)
 
 exercise_router = APIRouter()
 
+
 @exercise_router.post("/",response_model=ShowExercise)
 async def create_exercise(
         body: ExerciseCreate,db: AsyncSession = Depends(get_db))-> ShowExercise:
@@ -23,6 +24,7 @@ async def create_exercise(
     except IntegrityError as err:
         logger.error(err)
         raise HTTPException(status_code=503, detail=f"Ошибка бд: {err}")
+
 
 @exercise_router.get("/",response_model=ShowExercise)
 async def get_exercise_by_id(exercise_id:int,db: AsyncSession = Depends(get_db))-> ShowExercise:
@@ -35,6 +37,10 @@ async def get_exercise_by_id(exercise_id:int,db: AsyncSession = Depends(get_db))
             status_code=404, detail=f"Урок с id {exercise_id} не найден."
         )
     return exercise
+
+@exercise_router.get("/",response_model=ShowExercise)
+async def get_exercises_by_lesson_id(lesson_id: int,db: AsyncSession = Depends(get_db)) -> ShowExercise:
+
 
 
 

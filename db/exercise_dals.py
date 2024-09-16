@@ -8,11 +8,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.models import Exercise
 
+
 class Question:
     id: int
     question: str
     answer: str
     completed: bool
+
+
 class ExerciseDAL:
 
     def __init__(self, db_session: AsyncSession):
