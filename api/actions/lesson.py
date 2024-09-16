@@ -18,6 +18,7 @@ async def _create_new_lesson (body: LessonCreate, session) -> ShowLesson:
             content = lesson.content
         )
 
+
 async def _update_lesson(
         updated_lesson_params: dict, lesson_id: int, session
 ) -> int | None:
@@ -27,6 +28,7 @@ async def _update_lesson(
             lesson_id=lesson_id, **updated_lesson_params
         )
         return updated_lesson_id
+
 
 async def _get_lesson_by_id(lesson_id,session) -> Lesson | None:
     async with session.begin():

@@ -1,5 +1,4 @@
-from typing import Union
-
+from typing import Union, Type, List, Any
 
 from sqlalchemy import and_
 from sqlalchemy import select
@@ -58,4 +57,17 @@ class ExerciseDAL:
         update_exercise_id_row = res.fetchone()
         if update_exercise_id_row is not None:
             return update_exercise_id_row[0]
+
+    async def get_exercises_by_lesson_id(self,lesson_id:int) -> list[Any]:
+        query = select(Exercise).where(Exercise.lesson_id == lesson_id)
+        list_of_exercises= []
+        res = await self.db_session.execute(query)
+        while True:
+            exercise_row = res.fetchone()
+            if exercise_row is not None:
+                list_of_exercises.append(exercise_row[0])
+            else:
+                return list_of_exercises
+
+
         

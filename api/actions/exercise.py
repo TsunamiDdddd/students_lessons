@@ -31,3 +31,23 @@ async def _update_exercise(
             exercise_id=exercise_id,**updated_exercise_params
         )
         return updated_exercise_id
+
+
+async def _get_exercise_by_id(exercise_id, session) -> Exercise | None:
+    async with session.begin():
+        exercise_dal = ExerciseDAL(session)
+        exercise = await exercise_dal.get_exercise_by_id(
+            exercise_id=exercise_id
+        )
+        if exercise is not None:
+            return exercise
+
+async def _get_exercises_by_lesson_id(lesson_id, session) -> list | None:
+    async with session.begin():
+        exercise_dal = ExerciseDAL(session)
+        exercises = await exercise_dal.get_exercises_by_lesson_id(
+            lesson_id=lesson_id
+        )
+        if exercises is not None:
+            return exercises
+
