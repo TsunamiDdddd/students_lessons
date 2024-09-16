@@ -1,3 +1,5 @@
+from typing import List
+
 from fastapi import APIRouter
 from fastapi import Depends
 from fastapi import HTTPException
@@ -6,8 +8,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from api.actions.exercise import _create_new_exercise
 from api.actions.exercise import _update_exercise
 from api.actions.exercise import _get_exercise_by_id
+from api.actions.exercise import _get_exercises_by_lesson_id
 from api.schemas_exercises import ShowExercise
 from api.schemas_exercises import ExerciseCreate
+from db.models import Exercise
 from db.session import get_db
 from logging import getLogger
 
@@ -38,8 +42,17 @@ async def get_exercise_by_id(exercise_id:int,db: AsyncSession = Depends(get_db))
         )
     return exercise
 
-@exercise_router.get("/",response_model=ShowExercise)
-async def get_exercises_by_lesson_id(lesson_id: int,db: AsyncSession = Depends(get_db)) -> ShowExercise:
+@exercise_router.get("/",response_model=list[Exercise])
+async def get_exercises_by_lesson_id(lesson_id: int,db: AsyncSession = Depends(get_db)) -> list[Exercise]:
+    list_of_exercises = await _get_exercises_by_lesson_id(
+        lesson_id,
+        db
+    )
+    if list_of_exercises is None:
+        raise HTTPException(
+            status_code=404, detail=f"У данного урока нет упражнений"
+        )
+    return list_of_exercises
 
 
 
