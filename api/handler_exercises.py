@@ -42,17 +42,17 @@ async def get_exercise_by_id(exercise_id:int,db: AsyncSession = Depends(get_db))
         )
     return exercise
 
-@exercise_router.get("/",response_model=list[Exercise])
-async def get_exercises_by_lesson_id(lesson_id: int,db: AsyncSession = Depends(get_db)) -> list[Exercise]:
-    list_of_exercises = await _get_exercises_by_lesson_id(
-        lesson_id,
-        db
-    )
-    if list_of_exercises is None:
-        raise HTTPException(
-            status_code=404, detail=f"У данного урока нет упражнений"
-        )
-    return list_of_exercises
+#@exercise_router.get("/",response_model=list[Exercise])
+#async def get_exercises_by_lesson_id(lesson_id: int,db: AsyncSession = Depends(get_db)) -> list[Exercise]:
+#    list_of_exercises = await _get_exercises_by_lesson_id(
+#        lesson_id,
+#        db
+#    )
+#    if list_of_exercises is None:
+#       raise HTTPException(
+#            status_code=404, detail=f"У данного урока нет упражнений"
+#        )
+#    return list_of_exercises
 
 
 
